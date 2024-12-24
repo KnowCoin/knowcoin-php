@@ -1,0 +1,24 @@
+{
+    "name": "knowcoin/knowcoin-php",
+    "type": "library",
+    "description": "PHP Library for interacting with the KnowCoin API",
+    "keywords": ["knowcoin"],
+    "homepage": "https://github.com/KnowCoin/knowcoin-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "KnowCoin, Inc.",
+            "email": "code@knowcoin.com",
+            "homepage": "http://www.knowcoin.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Monolog": "src"
+        }
+    }
+}
