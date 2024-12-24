@@ -1,5 +1,6 @@
 {
     "name": "knowcoin/knowcoin-php",
+    "version": "1.0.0"
     "type": "library",
     "description": "PHP Library for interacting with the KnowCoin API",
     "keywords": ["knowcoin"],
