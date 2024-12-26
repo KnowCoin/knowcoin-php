@@ -24,9 +24,8 @@ jobs:
       - name: Install Composer Dependencies
         run: |
           composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-          chmod -R 777 storage bootstrap/cache
           
       - name: Run Unit Tests
         run: |
-          php artisan test -p
+          composer test -p
           

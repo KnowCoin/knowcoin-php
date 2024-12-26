@@ -27,6 +27,6 @@
         "phpunit/phpunit": "^11.5"
     },
     "scripts": {
-    	"test": "vendor/bin/phpunit"
+    	"test": "vendor/bin/paratest --processes=4"
     }
 }
