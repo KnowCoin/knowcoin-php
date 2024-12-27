@@ -4,9 +4,7 @@ namespace KnowCoin\KnowCoinPhp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use KnowCoin\KnowCoinPhp\Class\User;
 use KnowCoin\KnowCoinPhp\Mapper\UserMapper;
-use Tightenco\Collect\Support\Collection;
 
 class KnowCoinClient
 {
@@ -38,7 +36,7 @@ class KnowCoinClient
         $this->userMapper = new UserMapper();
     }
 
-    public function searchProfiles(): Collection
+    public function searchProfiles(): array
     {
         try {
             $response = $this->httpClient->get('/api/v1/profiles/search');

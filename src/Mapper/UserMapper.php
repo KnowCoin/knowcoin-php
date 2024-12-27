@@ -2,18 +2,21 @@
 
 namespace KnowCoin\KnowCoinPhp\Mapper;
 
-use KnowCoin\KnowCoinPhp\Class\User;
-use Tightenco\Collect\Support\Collection;
+use KnowCoin\KnowCoinPhp\User;
 
 class UserMapper
 {
     /**
      * @param array $data
-     * @return Collection
+     * @return User[]
      */
-    public function mapToUsers(array $data): Collection
+    public function mapToUsers(array $data): array
     {
-        return collect($data)->map(fn($item) => $this->mapToUser($item));
+        $users = [];
+        foreach ($data as $userData) {
+            $users[] = $this->mapToUser($userData);
+        }
+        return $users;
     }
 
     /**
@@ -27,7 +30,7 @@ class UserMapper
         $user->setEmail($data['email'] ?? '');
         $user->setType($data['type'] ?? '');
         $user->setPhoto($data['photo'] ?? '');
-        $user->setWalletAddresses($data['walletAddresses'] ?? []);
+        $user->setWalletAddresses($data['wallet_addresses'] ?? []);
 
         return $user;
     }

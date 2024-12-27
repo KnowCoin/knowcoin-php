@@ -17,8 +17,7 @@
   ],
   "require": {
     "php": ">=8.0.0",
-    "guzzlehttp/guzzle": "^7.9",
-    "tightenco/collect": "^9.52"
+    "guzzlehttp/guzzle": "^7.9"
   },
   "autoload": {
     "psr-0": {
