@@ -1,0 +1,31 @@
+name: Run Unit Tests
+on: [push]
+      
+jobs:
+
+  run-unit-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Prepare the Environment
+        run: cp .env.ci .env
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3.14'
+
+      - name: Install Composer Dependencies
+        run: |
+          composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+          
+      - name: Run Unit Tests
+        run: |
+          composer test -p
+          
