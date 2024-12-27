@@ -1,15 +1,15 @@
 <?php
 
-namespace KnowCoin\KnowCoinPhp;
+namespace KnowCoin\KnowCoinPhp\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
 class KnowCoinClient
 {
-    protected $url;
-    protected $httpClient;
-    protected $apiKey;
+    protected string $url;
+    protected Client $httpClient;
+    protected string $apiKey;
 
     public function __construct(string $apiKey = null, array $config = [])
     {
@@ -29,10 +29,10 @@ class KnowCoinClient
         $this->httpClient = new Client(array_merge($defaultConfig, $config));
     }
 
-    public function searchProfiles(array $params): array
+    public function searchProfiles(): array
     {
         try {
-            $response = $this->httpClient->get('/v1/profiles/search');
+            $response = $this->httpClient->get('/api/v1/profiles/search');
             return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         } catch (RequestException $e) {
             throw new \Exception('Error during API request: ' . $e->getMessage(), $e->getCode());
@@ -42,7 +42,7 @@ class KnowCoinClient
     public function findProfileByWalletAddress(string $walletAddress): array
     {
         try {
-            $response = $this->httpClient->get("/v1/crypto-address/{$walletAddress}");
+            $response = $this->httpClient->get("/api/v1/crypto-address/{$walletAddress}");
 
             return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         } catch (RequestException $e) {
