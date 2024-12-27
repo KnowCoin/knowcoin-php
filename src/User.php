@@ -1,6 +1,6 @@
 <?php
 
-namespace KnowCoin\KnowCoinPhp\Class;
+namespace KnowCoin\KnowCoinPhp;
 
 class User
 {
