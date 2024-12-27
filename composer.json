@@ -2,6 +2,7 @@
     "name": "knowcoin/knowcoin-php",
     "version": "1.0.0",
     "type": "library",
+    "minimum-stability": "stable",
     "description": "PHP Library for interacting with the KnowCoin API",
     "keywords": ["knowcoin"],
     "homepage": "https://github.com/KnowCoin/knowcoin-php",
@@ -15,12 +16,19 @@
         }
     ],
     "require": {
-        "php": ">=8.0.0"
+        "php": ">=8.0.0",
+        "guzzlehttp/guzzle": "^7.9"
     },
     "autoload": {
         "psr-0": {
-            "Monolog": "src"
+            "Monolog": "src",
+            "KnowCoin\\KnowCoinPhp\\": "src/"
         }
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "KnowCoin\\KnowCoinPhp\\Tests\\": "tests/"
+      }
     },
     "require-dev": {
         "brianium/paratest": "^7.7",
