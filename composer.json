@@ -1,11 +1,22 @@
 {
     "name": "knowcoin/knowcoin-php",
-    "description": "The Knowcoin PHP library simplifies integration with the Knowcoin API.",
-    "type": "dev",
+    "description": "The KnowCoin PHP library simplifies integration with the KnowCoin API.",
+    "type": "library",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Knowcoin\\KnowcoinPhp\\": "src/"
+            "KnowCoin\\KnowCoinPhp\\": "src/"
         }
     },
-    "require": {}
+    "autoload-dev": {
+        "psr-4": {
+            "KnowCoin\\KnowCoinPhp\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    }
 }
