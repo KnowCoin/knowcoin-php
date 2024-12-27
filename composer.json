@@ -1,32 +1,11 @@
 {
     "name": "knowcoin/knowcoin-php",
-    "version": "1.0.0",
-    "type": "library",
-    "description": "PHP Library for interacting with the KnowCoin API",
-    "keywords": ["knowcoin"],
-    "homepage": "https://github.com/KnowCoin/knowcoin-php",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "KnowCoin, Inc.",
-            "email": "code@knowcoin.com",
-            "homepage": "http://www.knowcoin.com",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": ">=8.0.0"
-    },
+    "description": "The Knowcoin PHP library simplifies integration with the Knowcoin API.",
+    "type": "dev",
     "autoload": {
-        "psr-0": {
-            "Monolog": "src"
+        "psr-4": {
+            "Knowcoin\\KnowcoinPhp\\": "src/"
         }
     },
-    "require-dev": {
-        "brianium/paratest": "^7.7",
-        "phpunit/phpunit": "^11.5"
-    },
-    "scripts": {
-    	"test": "vendor/bin/paratest --processes=4"
-    }
+    "require": {}
 }

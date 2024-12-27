@@ -1,16 +1,1 @@
 /vendor/
-/composer.lock
-.DS_Store
-.AppleDouble
-.LSOverride
-.idea/
-*.iml
-.vscode/
-.phpunit.result.cache
-*.log
-*.cache
-*.tmp
-.env
-.env.local
-.env.*.local
-
