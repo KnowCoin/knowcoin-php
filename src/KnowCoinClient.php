@@ -16,7 +16,7 @@ class KnowCoinClient
     public function __construct(string $apiKey = null, array $config = [])
     {
         $this->apiKey = getenv('KNOWCOIN_API_KEY');
-        $this->url = getenv('KNOWCOIN_URL');
+        $this->url = getenv('KNOWCOIN_API_URL');
         if (!$this->apiKey) {
             throw new \InvalidArgumentException('API key is required for KnowCoin API calls.');
         }
