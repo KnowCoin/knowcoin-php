@@ -3,17 +3,20 @@
 namespace KnowCoin\KnowCoinPhp;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use JsonException;
 use KnowCoin\KnowCoinPhp\Mapper\UserMapper;
+use KnowCoin\KnowCoinPhp\Exceptions\KnowCoinException;
 
 class KnowCoinClient
 {
     protected string $url;
-    protected Client $httpClient;
+    public Client $httpClient;
     protected string $apiKey;
-    protected UserMapper $userMapper;
+    public UserMapper $userMapper;
 
-    public function __construct(string $apiKey = null, array $config = [])
+    public function __construct(array $config = [])
     {
         $this->apiKey = getenv('KNOWCOIN_API_KEY');
         $this->url = getenv('KNOWCOIN_API_URL');
@@ -36,6 +39,12 @@ class KnowCoinClient
         $this->userMapper = new UserMapper();
     }
 
+    /**
+     * @return array
+     * @throws GuzzleException
+     * @throws KnowCoinException
+     * @throws JsonException
+     */
     public function searchProfiles(): array
     {
         try {
@@ -44,10 +53,15 @@ class KnowCoinClient
 
             return $this->userMapper->mapToUsers($data['users'] ?? []);
         } catch (RequestException $e) {
-            throw new \Exception('Error during API request: ' . $e->getMessage(), $e->getCode());
+            throw new KnowCoinException("Error fetching profiles: " . $e->getMessage(), $e->getCode(), $e);
         }
     }
 
+    /**
+     * @throws KnowCoinException
+     * @throws GuzzleException
+     * @throws JsonException
+     */
     public function findProfileByWalletAddress(string $walletAddress): ?User
     {
         try {
@@ -56,7 +70,7 @@ class KnowCoinClient
 
             return $this->userMapper->mapToUser($data['user'] ?? []);
         } catch (RequestException $e) {
-            throw new \Exception('Error during API request: ' . $e->getMessage(), $e->getCode());
+            throw new KnowCoinException("Error fetching profile for wallet address {$walletAddress}: " . $e->getMessage(), $e->getCode(), $e);
         }
     }
 }

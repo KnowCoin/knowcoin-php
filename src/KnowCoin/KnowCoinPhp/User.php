@@ -6,7 +6,6 @@ class User
 {
     private string $name;
     private string $email;
-    private string $type;
     private string $photo;
     private array $walletAddresses;
 
@@ -28,16 +27,6 @@ class User
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
     }
 
     public function getPhoto(): string

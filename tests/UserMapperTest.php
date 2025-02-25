@@ -13,7 +13,6 @@ class UserMapperTest extends TestCase
         $data = [
             'name' => 'John Doe',
             'email' => 'john.doe@example.com',
-            'type' => 'premium',
             'photo' => 'photo_url',
             'wallet_addresses' => ['wallet1', 'wallet2'],
         ];
@@ -24,7 +23,6 @@ class UserMapperTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('John Doe', $user->getName());
         $this->assertEquals('john.doe@example.com', $user->getEmail());
-        $this->assertEquals('premium', $user->getType());
         $this->assertEquals('photo_url', $user->getPhoto());
         $this->assertEquals(['wallet1', 'wallet2'], $user->getWalletAddresses());
     }
@@ -35,14 +33,12 @@ class UserMapperTest extends TestCase
             [
                 'name' => 'John Doe',
                 'email' => 'john.doe@example.com',
-                'type' => 'premium',
                 'photo' => 'photo_url',
                 'wallet_addresses' => ['wallet1', 'wallet2'],
             ],
             [
                 'name' => 'Jane Smith',
                 'email' => 'jane.smith@example.com',
-                'type' => 'basic',
                 'photo' => 'another_photo_url',
                 'wallet_addresses' => ['wallet3'],
             ],

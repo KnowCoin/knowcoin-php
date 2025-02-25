@@ -28,7 +28,6 @@ class UserMapper
         $user = new User();
         $user->setName($data['name'] ?? '');
         $user->setEmail($data['email'] ?? '');
-        $user->setType($data['type'] ?? '');
         $user->setPhoto($data['photo'] ?? '');
         $user->setWalletAddresses($data['wallet_addresses'] ?? []);
 
