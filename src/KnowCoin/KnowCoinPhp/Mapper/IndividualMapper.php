@@ -2,13 +2,13 @@
 
 namespace KnowCoin\KnowCoinPhp\Mapper;
 
-use KnowCoin\KnowCoinPhp\User;
+use KnowCoin\KnowCoinPhp\Individual;
 
-class UserMapper
+class IndividualMapper
 {
     /**
      * @param array $data
-     * @return User[]
+     * @return Individual[]
      */
     public function mapToUsers(array $data): array
     {
@@ -21,15 +21,16 @@ class UserMapper
 
     /**
      * @param array $data
-     * @return User
+     * @return Individual
      */
-    public function mapToUser(array $data): User
+    public function mapToUser(array $data): Individual
     {
-        $user = new User();
+        $user = new Individual();
         $user->setName($data['name'] ?? '');
         $user->setEmail($data['email'] ?? '');
         $user->setPhoto($data['photo'] ?? '');
         $user->setWalletAddresses($data['wallet_addresses'] ?? []);
+        $user->setIsVerified($data['is_verified'] ? 'true' : 'false');
 
         return $user;
     }

@@ -2,12 +2,13 @@
 
 namespace KnowCoin\KnowCoinPhp;
 
-class User
+class Individual
 {
     private string $name;
     private string $email;
     private string $photo;
     private array $walletAddresses;
+    private string $isVerified;
 
     public function getName(): string
     {
@@ -48,5 +49,16 @@ class User
     {
         $this->walletAddresses = $walletAddresses;
     }
+
+    public function getIsVerified(): string
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(string $isVerified): void
+    {
+        $this->isVerified = $isVerified;
+    }
+
 
 }

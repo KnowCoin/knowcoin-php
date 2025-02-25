@@ -2,11 +2,11 @@
 
 namespace KnowCoin\KnowCoinPhp\Tests;
 
-use KnowCoin\KnowCoinPhp\Mapper\UserMapper;
-use KnowCoin\KnowCoinPhp\User;
+use KnowCoin\KnowCoinPhp\Mapper\IndividualMapper;
+use KnowCoin\KnowCoinPhp\Individual;
 use PHPUnit\Framework\TestCase;
 
-class UserMapperTest extends TestCase
+class IndividualMapperTest extends TestCase
 {
     public function testMapToUser(): void
     {
@@ -17,10 +17,10 @@ class UserMapperTest extends TestCase
             'wallet_addresses' => ['wallet1', 'wallet2'],
         ];
 
-        $mapper = new UserMapper();
+        $mapper = new IndividualMapper();
         $user = $mapper->mapToUser($data);
 
-        $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(Individual::class, $user);
         $this->assertEquals('John Doe', $user->getName());
         $this->assertEquals('john.doe@example.com', $user->getEmail());
         $this->assertEquals('photo_url', $user->getPhoto());
@@ -44,11 +44,11 @@ class UserMapperTest extends TestCase
             ],
         ];
 
-        $mapper = new UserMapper();
+        $mapper = new IndividualMapper();
         $users = $mapper->mapToUsers($data);
 
         $this->assertCount(2, $users);
-        $this->assertInstanceOf(User::class, $users[0]);
+        $this->assertInstanceOf(Individual::class, $users[0]);
         $this->assertEquals('John Doe', $users[0]->getName());
         $this->assertEquals('Jane Smith', $users[1]->getName());
     }

@@ -6,8 +6,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use KnowCoin\KnowCoinPhp\Exceptions\KnowCoinException;
 use KnowCoin\KnowCoinPhp\KnowCoinClient;
-use KnowCoin\KnowCoinPhp\Mapper\UserMapper;
-use KnowCoin\KnowCoinPhp\User;
+use KnowCoin\KnowCoinPhp\Mapper\IndividualMapper;
+use KnowCoin\KnowCoinPhp\Individual;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
@@ -27,7 +27,7 @@ class KnowCoinClientTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHttpClient = $this->createMock(Client::class);
-        $this->mockUserMapper = $this->createMock(UserMapper::class);
+        $this->mockUserMapper = $this->createMock(IndividualMapper::class);
 
         putenv('KNOWCOIN_API_KEY=test_api_key');
         putenv('KNOWCOIN_API_URL=https://api.knowcoin.com');
@@ -96,7 +96,7 @@ class KnowCoinClientTest extends TestCase
             ->with("/api/v1/crypto-address/{$walletAddress}")
             ->willReturn($mockResponse);
 
-        $mockUser = $this->createMock(User::class);
+        $mockUser = $this->createMock(Individual::class);
 
         $this->mockUserMapper
             ->expects($this->once())
@@ -106,7 +106,7 @@ class KnowCoinClientTest extends TestCase
 
         $result = $this->knowCoinClient->findProfileByWalletAddress($walletAddress);
 
-        $this->assertInstanceOf(User::class, $result);
+        $this->assertInstanceOf(Individual::class, $result);
         $this->assertSame($mockUser, $result);
     }
 
