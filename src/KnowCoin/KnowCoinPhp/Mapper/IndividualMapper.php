@@ -8,30 +8,17 @@ class IndividualMapper
 {
     /**
      * @param array $data
-     * @return Individual[]
-     */
-    public function mapToUsers(array $data): array
-    {
-        $users = [];
-        foreach ($data as $userData) {
-            $users[] = $this->mapToUser($userData);
-        }
-        return $users;
-    }
-
-    /**
-     * @param array $data
      * @return Individual
      */
-    public function mapToUser(array $data): Individual
+    public function mapToIndividual(array $data): Individual
     {
-        $user = new Individual();
-        $user->setName($data['name'] ?? '');
-        $user->setEmail($data['email'] ?? '');
-        $user->setPhoto($data['photo'] ?? '');
-        $user->setWalletAddresses($data['wallet_addresses'] ?? []);
-        $user->setIsVerified($data['is_verified'] ? 'true' : 'false');
+        $individual = new Individual();
+        $individual->setName($data['name'] ?? '');
+        $individual->setEmail($data['email'] ?? '');
+        $individual->setPhoto($data['photo'] ?? '');
+        $individual->setWalletAddresses($data['wallet_addresses'] ?? []);
+        $individual->setIsVerified($data['is_verified'] ? 'true' : 'false');
 
-        return $user;
+        return $individual;
     }
 }

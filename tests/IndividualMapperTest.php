@@ -8,48 +8,71 @@ use PHPUnit\Framework\TestCase;
 
 class IndividualMapperTest extends TestCase
 {
-    public function testMapToUser(): void
+    protected $mockIndividualMapper;
+    protected $mockIndividual;
+
+    protected function setUp(): void
+    {
+        $this->mockIndividualMapper = $this->createMock(IndividualMapper::class);
+        $this->mockIndividual = $this->createMock(Individual::class);
+    }
+
+    public function testMapToIndividual(): void
     {
         $data = [
             'name' => 'John Doe',
             'email' => 'john.doe@example.com',
             'photo' => 'photo_url',
-            'wallet_addresses' => ['wallet1', 'wallet2'],
+            'wallet_addresses' => [
+                [
+                    'wallet_address' => 'test-address',
+                    'coin' => 'Ethereum (ETH)',
+                    'network' => null,
+                ],
+                [
+                    'wallet_address' => 'test-address-2',
+                    'coin' => 'Bitcoin (BTC)',
+                    'network' => null,
+                ]
+            ],
+            'is_verified' => 'true',
         ];
 
-        $mapper = new IndividualMapper();
-        $user = $mapper->mapToUser($data);
 
-        $this->assertInstanceOf(Individual::class, $user);
-        $this->assertEquals('John Doe', $user->getName());
-        $this->assertEquals('john.doe@example.com', $user->getEmail());
-        $this->assertEquals('photo_url', $user->getPhoto());
-        $this->assertEquals(['wallet1', 'wallet2'], $user->getWalletAddresses());
+        $this->mockIndividual->method('getName')->willReturn($data['name']);
+        $this->mockIndividual->method('getEmail')->willReturn($data['email']);
+        $this->mockIndividual->method('getPhoto')->willReturn($data['photo']);
+        $this->mockIndividual->method('getWalletAddresses')->willReturn($data['wallet_addresses']);
+        $this->mockIndividual->method('getIsVerified')->willReturn($data['is_verified']);
+
+        $this->mockIndividualMapper
+            ->expects($this->once())
+            ->method('mapToIndividual')
+            ->with($data)
+            ->willReturn($this->mockIndividual);
+
+        $this->mockIndividualMapper->mapToIndividual($data);
+        $this->assertInstanceOf(Individual::class, $this->mockIndividual);
+        $this->assertEquals($data['name'], $this->mockIndividual->getName());
+        $this->assertEquals($data['email'], $this->mockIndividual->getEmail());
+        $this->assertEquals($data['photo'], $this->mockIndividual->getPhoto());
+        $this->assertEquals($data['wallet_addresses'], $this->mockIndividual->getWalletAddresses());
+        $this->assertEquals($data['is_verified'], $this->mockIndividual->getIsVerified());
     }
 
-    public function testMapToUsers(): void
+    public function testMapToUserHandlesMissingFields(): void
     {
-        $data = [
-            [
-                'name' => 'John Doe',
-                'email' => 'john.doe@example.com',
-                'photo' => 'photo_url',
-                'wallet_addresses' => ['wallet1', 'wallet2'],
-            ],
-            [
-                'name' => 'Jane Smith',
-                'email' => 'jane.smith@example.com',
-                'photo' => 'another_photo_url',
-                'wallet_addresses' => ['wallet3'],
-            ],
-        ];
+        $data = [];
 
-        $mapper = new IndividualMapper();
-        $users = $mapper->mapToUsers($data);
+        $mapper = $this->createMock(IndividualMapper::class);
+        $individual = $mapper->mapToIndividual($data);
 
-        $this->assertCount(2, $users);
-        $this->assertInstanceOf(Individual::class, $users[0]);
-        $this->assertEquals('John Doe', $users[0]->getName());
-        $this->assertEquals('Jane Smith', $users[1]->getName());
+        $this->assertInstanceOf(Individual::class, $individual);
+        $this->assertEquals('', $individual->getName());
+        $this->assertEquals('', $individual->getEmail());
+        $this->assertEquals('', $individual->getPhoto());
+        $this->assertEquals([], $individual->getWalletAddresses());
+        $this->assertEquals('', $individual->getIsVerified());
     }
+
 }

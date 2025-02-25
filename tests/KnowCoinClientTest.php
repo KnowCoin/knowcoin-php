@@ -7,7 +7,9 @@ use JsonException;
 use KnowCoin\KnowCoinPhp\Exceptions\KnowCoinException;
 use KnowCoin\KnowCoinPhp\KnowCoinClient;
 use KnowCoin\KnowCoinPhp\Mapper\IndividualMapper;
+use KnowCoin\KnowCoinPhp\Mapper\BusinessMapper;
 use KnowCoin\KnowCoinPhp\Individual;
+use KnowCoin\KnowCoinPhp\Business;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
@@ -18,7 +20,8 @@ use PHPUnit\Framework\TestCase;
 class KnowCoinClientTest extends TestCase
 {
     protected $mockHttpClient;
-    protected $mockUserMapper;
+    protected $mockIndividualMapper;
+    protected $mockBusinessMapper;
     protected KnowCoinClient $knowCoinClient;
 
     /**
@@ -27,14 +30,16 @@ class KnowCoinClientTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHttpClient = $this->createMock(Client::class);
-        $this->mockUserMapper = $this->createMock(IndividualMapper::class);
+        $this->mockIndividualMapper = $this->createMock(IndividualMapper::class);
+        $this->mockBusinessMapper = $this->createMock(BusinessMapper::class);
 
         putenv('KNOWCOIN_API_KEY=test_api_key');
         putenv('KNOWCOIN_API_URL=https://api.knowcoin.com');
 
         $this->knowCoinClient = new KnowCoinClient(['httpClient' => $this->mockHttpClient]);
         $this->knowCoinClient->httpClient = $this->mockHttpClient;
-        $this->knowCoinClient->userMapper = $this->mockUserMapper;
+        $this->knowCoinClient->individualMapper = $this->mockIndividualMapper;
+        $this->knowCoinClient->businessMapper = $this->mockBusinessMapper;
     }
 
     public function test_constructor_throws_exception_without_api_key()
@@ -55,12 +60,18 @@ class KnowCoinClientTest extends TestCase
         new KnowCoinClient();
     }
 
-    public function test_search_profiles_returns_mapped_users()
+    /**
+     * @throws Exception
+     * @throws KnowCoinException
+     * @throws GuzzleException
+     * @throws JsonException
+     */
+    public function test_search_profiles_returns_mapped_profiles()
     {
         $mockResponseData = [
-            'users' => [
-                ['id' => 1, 'name' => 'Alice'],
-                ['id' => 2, 'name' => 'Bob']
+            'profiles' => [
+                ['type' => 'Individual', 'name' => 'Alice'],
+                ['type' => 'Business', 'name' => 'Tech Corp']
             ]
         ];
 
@@ -72,21 +83,38 @@ class KnowCoinClientTest extends TestCase
             ->with('/api/v1/profiles/search')
             ->willReturn($mockResponse);
 
-        $this->mockUserMapper
+        $mockIndividual = $this->createMock(Individual::class);
+        $mockBusiness = $this->createMock(Business::class);
+
+        $this->mockIndividualMapper
             ->expects($this->once())
-            ->method('mapToUsers')
-            ->with($mockResponseData['users'])
-            ->willReturn(['user_1', 'user_2']);
+            ->method('mapToIndividual')
+            ->with($mockResponseData['profiles'][0])
+            ->willReturn($mockIndividual);
+
+        $this->mockBusinessMapper
+            ->expects($this->once())
+            ->method('mapToBusiness')
+            ->with($mockResponseData['profiles'][1])
+            ->willReturn($mockBusiness);
 
         $result = $this->knowCoinClient->searchProfiles();
 
-        $this->assertEquals(['user_1', 'user_2'], $result);
+        $this->assertCount(2, $result);
+        $this->assertSame($mockIndividual, $result[0]);
+        $this->assertSame($mockBusiness, $result[1]);
     }
 
-    public function test_find_profile_by_wallet_address_returns_mapped_user()
+    /**
+     * @throws Exception
+     * @throws KnowCoinException
+     * @throws GuzzleException
+     * @throws JsonException
+     */
+    public function test_find_profile_by_wallet_address_returns_mapped_individual()
     {
         $walletAddress = '0x123456';
-        $mockResponseData = ['user' => ['id' => 1, 'name' => 'Alice']];
+        $mockResponseData = ['profile' => ['type' => 'Individual', 'name' => 'Alice']];
 
         $mockResponse = new Response(200, [], json_encode($mockResponseData));
 
@@ -96,24 +124,55 @@ class KnowCoinClientTest extends TestCase
             ->with("/api/v1/crypto-address/{$walletAddress}")
             ->willReturn($mockResponse);
 
-        $mockUser = $this->createMock(Individual::class);
+        $mockIndividual = $this->createMock(Individual::class);
 
-        $this->mockUserMapper
+        $this->mockIndividualMapper
             ->expects($this->once())
-            ->method('mapToUser')
-            ->with($mockResponseData['user'])
-            ->willReturn($mockUser);
+            ->method('mapToIndividual')
+            ->with($mockResponseData['profile'])
+            ->willReturn($mockIndividual);
 
         $result = $this->knowCoinClient->findProfileByWalletAddress($walletAddress);
 
         $this->assertInstanceOf(Individual::class, $result);
-        $this->assertSame($mockUser, $result);
+        $this->assertSame($mockIndividual, $result);
     }
 
     /**
-     * @return void
-     * @throws GuzzleException
+     * @throws Exception
      * @throws KnowCoinException
+     * @throws GuzzleException
+     * @throws JsonException
+     */
+    public function test_find_profile_by_wallet_address_returns_mapped_business()
+    {
+        $walletAddress = '0x789ABC';
+        $mockResponseData = ['profile' => ['type' => 'Business', 'name' => 'Tech Corp']];
+
+        $mockResponse = new Response(200, [], json_encode($mockResponseData));
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('get')
+            ->with("/api/v1/crypto-address/{$walletAddress}")
+            ->willReturn($mockResponse);
+
+        $mockBusiness = $this->createMock(Business::class);
+
+        $this->mockBusinessMapper
+            ->expects($this->once())
+            ->method('mapToBusiness')
+            ->with($mockResponseData['profile'])
+            ->willReturn($mockBusiness);
+
+        $result = $this->knowCoinClient->findProfileByWalletAddress($walletAddress);
+
+        $this->assertInstanceOf(Business::class, $result);
+        $this->assertSame($mockBusiness, $result);
+    }
+
+    /**
+     * @throws GuzzleException
      * @throws JsonException
      */
     public function test_search_profiles_handles_request_exception()
@@ -124,14 +183,13 @@ class KnowCoinClientTest extends TestCase
             ->with('/api/v1/profiles/search')
             ->willThrowException(new RequestException('API error', new Request('GET', '/api/v1/profiles/search')));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(KnowCoinException::class);
         $this->expectExceptionMessage('Error fetching profiles: API error');
 
         $this->knowCoinClient->searchProfiles();
     }
 
     /**
-     * @throws KnowCoinException
      * @throws GuzzleException
      * @throws JsonException
      */
@@ -145,7 +203,7 @@ class KnowCoinClientTest extends TestCase
             ->with("/api/v1/crypto-address/{$walletAddress}")
             ->willThrowException(new RequestException('API error', new Request('GET', "/api/v1/crypto-address/{$walletAddress}")));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(KnowCoinException::class);
         $this->expectExceptionMessage("Error fetching profile for wallet address {$walletAddress}: API error");
 
         $this->knowCoinClient->findProfileByWalletAddress($walletAddress);

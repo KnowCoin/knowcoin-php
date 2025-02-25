@@ -8,19 +8,6 @@ class BusinessMapper
 {
     /**
      * @param array $data
-     * @return Business[]
-     */
-    public function mapToBusinesses(array $data): array
-    {
-        $businesses = [];
-        foreach ($data as $businessData) {
-            $businesses[] = $this->mapToBusiness($businessData);
-        }
-        return $businesses;
-    }
-
-    /**
-     * @param array $data
      * @return Business
      */
     public function mapToBusiness(array $data): Business

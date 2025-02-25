@@ -71,7 +71,7 @@ class KnowCoinClient
                 if ($profile['type'] === 'Business') {
                     $profiles[] = $this->businessMapper->mapToBusiness($profile);
                 } elseif ($profile['type'] === 'Individual') {
-                    $profiles[] = $this->individualMapper->mapToUser($profile);
+                    $profiles[] = $this->individualMapper->mapToIndividual($profile);
                 }
             }
 
@@ -98,7 +98,7 @@ class KnowCoinClient
 
             return $data['profile']['type'] == 'Business'
                 ? $this->businessMapper->mapToBusiness($data['profile'])
-                : $this->individualMapper->mapToUser($data['profile']);
+                : $this->individualMapper->mapToIndividual($data['profile']);
 
         } catch (RequestException $e) {
             throw new KnowCoinException("Error fetching profile for wallet address {$walletAddress}: " . $e->getMessage(), $e->getCode(), $e);
