@@ -43,12 +43,39 @@ class KnowCoinClient
     }
 
     /**
-     * @param string|null $query
-     * @param string|null $type
-     * @return array
-     * @throws GuzzleException
-     * @throws JsonException
-     * @throws KnowCoinException
+     * Search for profiles based on a query and type.
+     *
+     * @param string|null $query Optional. Search term to filter profiles by name or keyword.
+     * @param string|null $type  Optional. Type of profiles to search for:
+     *                           - `'individuals'` to return only individual profiles.
+     *                           - `'businesses'` to return only business profiles.
+     *                           - `null` (default) to return both individuals and businesses.
+     *
+     * @return array An array of mapped `Individual` or `Business` objects.
+     *
+     * @throws GuzzleException If the HTTP request fails.
+     * @throws JsonException If JSON decoding fails.
+     * @throws KnowCoinException If an error occurs while fetching profiles.
+     *
+     * @example
+     *  $client = new KnowCoinClient();
+     *
+     *  // Search for all profiles (default: both individuals and businesses)
+     *  $allProfiles = $client->searchProfiles();
+     *  print_r($allProfiles);
+     *
+     *  // Search for profiles with the name "John Doe"
+     *  $johnDoeProfiles = $client->searchProfiles('John Doe');
+     *  print_r($johnDoeProfiles);
+     *
+     *  // Search for businesses only
+     *  $businessProfiles = $client->searchProfiles(null, 'businesses');
+     *  print_r($businessProfiles);
+     *
+     *  // Search for individuals named "Alice"
+     *  $aliceProfiles = $client->searchProfiles('Alice', 'individuals');
+     *  print_r($aliceProfiles);
+     * /
      */
     public function searchProfiles(?string $query = null, ?string $type = null): array
     {
@@ -82,9 +109,30 @@ class KnowCoinClient
     }
 
     /**
-     * @throws KnowCoinException
-     * @throws GuzzleException
-     * @throws JsonException
+     * Finds and returns a profile associated with the given cryptocurrency wallet address.
+     *
+     * This function sends a request to the KnowCoin API to retrieve profile details
+     * linked to a specific wallet address. The profile can belong to either an individual
+     * or a business. If no profile is found, the function returns `null`.
+     *
+     * @param string $walletAddress The cryptocurrency wallet address to look up.
+     *
+     * @return Individual|Business|null Returns an `Individual` or `Business` object if a profile is found,
+     *                                  or `null` if no profile exists for the given wallet address.
+     *
+     * @throws KnowCoinException If an error occurs while fetching the profile from the API.
+     * @throws GuzzleException If there is a failure in the HTTP request.
+     * @throws JsonException If there is an error decoding the API response.
+     *
+     * @example
+     * $client = new KnowCoinClient();
+     * $profile = $client->findProfileByWalletAddress('0xABC123DEF458');
+     *
+     * if ($profile) {
+     *     echo "Profile found: " . print_r($profile, true);
+     * } else {
+     *     echo "No profile found for this wallet address.";
+     * }
      */
     public function findProfileByWalletAddress(string $walletAddress): Individual|Business|null
     {
